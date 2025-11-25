@@ -6,6 +6,7 @@ int GRID_WIDTH=30,GRID_HEIGHT=20;
 int CELL_SIZE=16;
 int WINDOW_WIDTH = CELL_SIZE*GRID_WIDTH;
 int WINDOW_HEIGHT = CELL_SIZE*GRID_HEIGHT;
+const float INITIAL_DELAY = 0.1f;
 
 const int MAX_SNAKE_LENGTH = 100;
 
@@ -16,13 +17,8 @@ enum Direction {
     Up = 3
 };
 
-
-
-struct Snake 
-{ int x,y;}  snakeObject[MAX_SNAKE_LENGTH];
-
-struct Fruit
-{ int x,y;} fruits;
+struct Snake { int x, y; };
+struct Fruit { int x, y; };
 
 class SnakeGameLogic {
 public:
@@ -87,10 +83,7 @@ int snake()
     Sprite sprite2(t2);
 
     Clock clock;
-    float timer=0, delay=0.1;
-
-    fruits.x=10;
-    fruits.y=10; 
+    float timer=0, delay= INITIAL_DELAY;
     
     while (window.isOpen())
     {
@@ -117,9 +110,13 @@ int snake()
    ////// draw  ///////
     window.clear();
 
-    for (int i=0; i<GRID_WIDTH; i++) 
-      for (int j=0; j<GRID_HEIGHT; j++) 
-        { sprite1.setPosition(i*CELL_SIZE, j*CELL_SIZE);  window.draw(sprite1); }
+    for (int i = 0; i < GRID_WIDTH; i++) 
+    {
+        for (int j = 0; j < GRID_HEIGHT; j++) {
+            sprite1.setPosition(i * CELL_SIZE, j * CELL_SIZE);
+            window.draw(sprite1);
+        }
+    }
 
     for (int i=0;i< game.snakeLength;i++){
         sprite2.setPosition(game.snake[i].x * CELL_SIZE, game.snake[i].y * CELL_SIZE);
