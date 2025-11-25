@@ -2,10 +2,10 @@
 #include <time.h>
 using namespace sf;
 
-const int M = 20;
-const int N = 10;
+const int GRID_HEIGHT = 20;
+const int GRID_WIDTH = 10;
 
-int field[M][N] = {0};
+int field[GRID_HEIGHT][GRID_WIDTH] = {0};
 
 struct Point
 {int x,y;} a[4], b[4];
@@ -24,7 +24,7 @@ int figures[7][4] =
 bool check()
 {
    for (int i=0;i<4;i++)
-      if (a[i].x<0 || a[i].x>=N || a[i].y>=M) return 0;
+      if (a[i].x<0 || a[i].x>=GRID_WIDTH || a[i].y>=GRID_HEIGHT) return 0;
       else if (field[a[i].y][a[i].x]) return 0;
 
    return 1;
@@ -109,16 +109,16 @@ int tetris()
       }
 
     ///////check lines//////////
-    int k=M-1;
-    for (int i=M-1;i>0;i--)
+    int k=GRID_HEIGHT-1;
+    for (int i=GRID_HEIGHT-1;i>0;i--)
     {
         int count=0;
-        for (int j=0;j<N;j++)
+        for (int j=0;j<GRID_WIDTH;j++)
         {
             if (field[i][j]) count++;
             field[k][j]=field[i][j];
         }
-        if (count<N) k--;
+        if (count<GRID_WIDTH) k--;
     }
 
     dx=0; rotate=0; delay=0.3;
@@ -127,8 +127,8 @@ int tetris()
     window.clear(Color::White);    
     window.draw(background);
           
-    for (int i=0;i<M;i++)
-     for (int j=0;j<N;j++)
+    for (int i=0;i<GRID_HEIGHT;i++)
+     for (int j=0;j<GRID_WIDTH;j++)
        {
          if (field[i][j]==0) continue;
          s.setTextureRect(IntRect(field[i][j]*18,0,18,18));
