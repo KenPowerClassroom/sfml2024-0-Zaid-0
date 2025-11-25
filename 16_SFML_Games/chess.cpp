@@ -6,7 +6,7 @@ using namespace sf;
 int size = 56;
 Vector2f os(28,28);
 
-Sprite f[32]; //figures
+Sprite fruits[32]; //figures
 std::string position="";
 
 int board[8][8] = 
@@ -40,10 +40,10 @@ void move(std::string str)
     Vector2f newPos = toCoord(str[2],str[3]);
 
     for(int i=0;i<32;i++)
-     if (f[i].getPosition()==newPos) f[i].setPosition(-100,-100);
+     if (fruits[i].getPosition()==newPos) fruits[i].setPosition(-100,-100);
         
     for(int i=0;i<32;i++)
-     if (f[i].getPosition()==oldPos) f[i].setPosition(newPos);
+     if (fruits[i].getPosition()==oldPos) fruits[i].setPosition(newPos);
 
     //castling       //if the king didn't move
     if (str=="e1g1") if (position.find("e1")==-1) move("h1f1"); 
@@ -62,8 +62,8 @@ void loadPosition()
        if (!n) continue;
        int x = abs(n)-1;
        int y = n>0?1:0;
-       f[k].setTextureRect( IntRect(size*x,size*y,size,size) );
-       f[k].setPosition(size*j,size*i);
+       fruits[k].setTextureRect( IntRect(size*x,size*y,size,size) );
+       fruits[k].setPosition(size*j,size*i);
        k++;
      }
 
@@ -86,7 +86,7 @@ int chess()
     t1.loadFromFile("images/chess/figures.png"); 
     t2.loadFromFile("images/chess/board.png");
 
-    for(int i=0;i<32;i++) f[i].setTexture(t1);
+    for(int i=0;i<32;i++) fruits[i].setTexture(t1);
     Sprite sBoard(t2); 
 
     loadPosition();
@@ -116,24 +116,24 @@ int chess()
             if (e.type == Event::MouseButtonPressed)
                 if (e.key.code == Mouse::Left)
                   for(int i=0;i<32;i++)
-                  if (f[i].getGlobalBounds().contains(pos.x,pos.y))
+                  if (fruits[i].getGlobalBounds().contains(pos.x,pos.y))
                       {
                        isMove=true; n=i;
-                       dx=pos.x - f[i].getPosition().x;
-                       dy=pos.y - f[i].getPosition().y;
-                       oldPos  =  f[i].getPosition();
+                       dx=pos.x - fruits[i].getPosition().x;
+                       dy=pos.y - fruits[i].getPosition().y;
+                       oldPos  =  fruits[i].getPosition();
                       }
 
              if (e.type == Event::MouseButtonReleased)
                 if (e.key.code == Mouse::Left)
                  {
                   isMove=false;
-                  Vector2f p = f[n].getPosition() + Vector2f(size/2,size/2);
+                  Vector2f p = fruits[n].getPosition() + Vector2f(size/2,size/2);
                   newPos = Vector2f( size*int(p.x/size), size*int(p.y/size) );
                   str = toChessNote(oldPos)+toChessNote(newPos);
                   move(str); 
                   if (oldPos!=newPos) position+=str+" ";
-                  f[n].setPosition(newPos);                   
+                  fruits[n].setPosition(newPos);                   
                  }                       
         }
 
@@ -145,32 +145,32 @@ int chess()
          oldPos = toCoord(str[0],str[1]);
          newPos = toCoord(str[2],str[3]);
          
-         for(int i=0;i<32;i++) if (f[i].getPosition()==oldPos) n=i;
+         for(int i=0;i<32;i++) if (fruits[i].getPosition()==oldPos) n=i;
          
          /////animation///////
          for(int k=0;k<50;k++)
           {
             Vector2f p = newPos - oldPos;
-            f[n].move(p.x/50, p.y/50); 
+            fruits[n].move(p.x/50, p.y/50); 
             window.draw(sBoard);
-            for(int i=0;i<32;i++) f[i].move(os);
-            for(int i=0;i<32;i++) window.draw(f[i]); window.draw(f[n]);
-            for(int i=0;i<32;i++) f[i].move(-os);
+            for(int i=0;i<32;i++) fruits[i].move(os);
+            for(int i=0;i<32;i++) window.draw(fruits[i]); window.draw(fruits[n]);
+            for(int i=0;i<32;i++) fruits[i].move(-os);
             window.display();
           }
 
         move(str);  position+=str+" ";
-        f[n].setPosition(newPos); 
+        fruits[n].setPosition(newPos); 
         }
 
-        if (isMove) f[n].setPosition(pos.x-dx,pos.y-dy);
+        if (isMove) fruits[n].setPosition(pos.x-dx,pos.y-dy);
 
     ////// draw  ///////
     window.clear();
     window.draw(sBoard);
-    for(int i=0;i<32;i++) f[i].move(os);
-    for(int i=0;i<32;i++) window.draw(f[i]); window.draw(f[n]);
-    for(int i=0;i<32;i++) f[i].move(-os);
+    for(int i=0;i<32;i++) fruits[i].move(os);
+    for(int i=0;i<32;i++) window.draw(fruits[i]); window.draw(fruits[n]);
+    for(int i=0;i<32;i++) fruits[i].move(-os);
     window.display();
     }
 

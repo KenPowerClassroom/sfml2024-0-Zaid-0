@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
-const int num=8; //checkpoints
-int points[num][2] = {300, 610,
+const int snakeLength=8; //checkpoints
+int points[snakeLength][2] = {300, 610,
                       1270,430,
                       1380,2380,
                       1900,2460,
@@ -29,7 +29,7 @@ struct Car
     float ty=points[n][1];
     float beta = angle-atan2(tx-x,-ty+y);
     if (sin(beta)<0) angle+=0.005*speed; else angle-=0.005*speed;
-    if ((x-tx)*(x-tx)+(y-ty)*(y-ty)<25*25) n=(n+1)%num;
+    if ((x-tx)*(x-tx)+(y-ty)*(y-ty)<25*25) n=(n+1)%snakeLength;
    }
 };
 
