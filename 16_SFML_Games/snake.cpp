@@ -9,7 +9,16 @@ int WINDOW_HEIGHT = CELL_SIZE*GRID_HEIGHT;
 
 const int MAX_SNAKE_LENGTH = 100;
 
-int direction,snakeLength=4;
+enum Direction {
+    Down = 0,
+    Left = 1,
+    Right = 2,
+    Up = 3
+};
+
+Direction direction = Up ;
+
+int snakeLength=4;
 
 struct Snake 
 { int x,y;}  snakeObject[MAX_SNAKE_LENGTH];
@@ -22,10 +31,10 @@ void Tick()
     for (int i=snakeLength;i>0;--i)
      {snakeObject[i].x=snakeObject[i-1].x; snakeObject[i].y=snakeObject[i-1].y;}
 
-    if (direction==0) snakeObject[0].y+=1;      
-    if (direction==1) snakeObject[0].x-=1;        
-    if (direction==2) snakeObject[0].x+=1;         
-    if (direction==3) snakeObject[0].y-=1;   
+    if (direction== Down) snakeObject[0].y+=1;      
+    if (direction== Left) snakeObject[0].x-=1;        
+    if (direction== Right) snakeObject[0].x+=1;         
+    if (direction==Up) snakeObject[0].y-=1;   
 
     if ((snakeObject[0].x==fruits.x) && (snakeObject[0].y==fruits.y)) 
      {snakeLength++; fruits.x=rand()%GRID_WIDTH; fruits.y=rand()%GRID_HEIGHT;}
@@ -69,10 +78,10 @@ int snake()
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left)) direction=1;   
-        if (Keyboard::isKeyPressed(Keyboard::Right)) direction=2;    
-        if (Keyboard::isKeyPressed(Keyboard::Up)) direction=3;
-        if (Keyboard::isKeyPressed(Keyboard::Down)) direction=0;
+        if (Keyboard::isKeyPressed(Keyboard::Left)) direction=Left ;   
+        if (Keyboard::isKeyPressed(Keyboard::Right)) direction= Right ;    
+        if (Keyboard::isKeyPressed(Keyboard::Up)) direction= Up;
+        if (Keyboard::isKeyPressed(Keyboard::Down)) direction=Down ;
 
         if (timer>delay) {timer=0; Tick();}
 
