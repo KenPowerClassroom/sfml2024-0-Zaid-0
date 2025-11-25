@@ -16,9 +16,7 @@ enum Direction {
     Up = 3
 };
 
-Direction direction = Up ;
 
-int snakeLength=4;
 
 struct Snake 
 { int x,y;}  snakeObject[MAX_SNAKE_LENGTH];
@@ -26,28 +24,57 @@ struct Snake
 struct Fruit
 { int x,y;} fruits;
 
-void Tick()
- {
-    for (int i=snakeLength;i>0;--i)
-     {snakeObject[i].x=snakeObject[i-1].x; snakeObject[i].y=snakeObject[i-1].y;}
+class SnakeGameLogic {
+public:
+    SnakeGameLogic() {
+        snakeLength = 4;
+        direction = Down;
+        fruit.x = 10;
+        fruit.y = 10;
+        snake[0].x = GRID_WIDTH / 2;
+        snake[0].y = GRID_HEIGHT / 2;
+    }
 
-    if (direction== Down) snakeObject[0].y+=1;      
-    if (direction== Left) snakeObject[0].x-=1;        
-    if (direction== Right) snakeObject[0].x+=1;         
-    if (direction==Up) snakeObject[0].y-=1;   
+    void setDirection(Direction d) {
+        direction = d;
+    }
 
-    if ((snakeObject[0].x==fruits.x) && (snakeObject[0].y==fruits.y)) 
-     {snakeLength++; fruits.x=rand()%GRID_WIDTH; fruits.y=rand()%GRID_HEIGHT;}
+    void tick() {
+        for (int i = snakeLength; i > 0; --i) {
+            snake[i] = snake[i - 1];
+        }
 
-    if (snakeObject[0].x>GRID_WIDTH) snakeObject[0].x=0;  if (snakeObject[0].x<0) snakeObject[0].x=GRID_WIDTH;
-    if (snakeObject[0].y>GRID_HEIGHT) snakeObject[0].y=0;  if (snakeObject[0].y<0) snakeObject[0].y=GRID_HEIGHT;
- 
-    for (int i=1;i<snakeLength;i++)
-     if (snakeObject[0].x==snakeObject[i].x && snakeObject[0].y==snakeObject[i].y)  snakeLength=i;
- }
+        if (direction == Down)  snake[0].y += 1;
+        if (direction == Left)  snake[0].x -= 1;
+        if (direction == Right) snake[0].x += 1;
+        if (direction == Up)    snake[0].y -= 1;
+
+        if (snake[0].x == fruit.x && snake[0].y == fruit.y) {
+            snakeLength++;
+            fruit.x = rand() % GRID_WIDTH;
+            fruit.y = rand() % GRID_HEIGHT;
+        }
+
+        if (snake[0].x > GRID_WIDTH)  snake[0].x = 0;
+        if (snake[0].x < 0)           snake[0].x = GRID_WIDTH;
+        if (snake[0].y > GRID_HEIGHT) snake[0].y = 0;
+        if (snake[0].y < 0)           snake[0].y = GRID_HEIGHT;
+
+        for (int i = 1; i < snakeLength; i++) {
+            if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
+                snakeLength = i;
+        }
+    }
+
+    Snake snake[MAX_SNAKE_LENGTH];
+    Fruit fruit;
+    int snakeLength;
+    Direction direction;
+};
 
 int snake()
 {  
+    SnakeGameLogic game;
     srand(time(0));
 
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake Game!");
@@ -78,12 +105,14 @@ int snake()
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left)) direction=Left ;   
-        if (Keyboard::isKeyPressed(Keyboard::Right)) direction= Right ;    
-        if (Keyboard::isKeyPressed(Keyboard::Up)) direction= Up;
-        if (Keyboard::isKeyPressed(Keyboard::Down)) direction=Down ;
+        if (Keyboard::isKeyPressed(Keyboard::Left))  game.setDirection(Left);
+        if (Keyboard::isKeyPressed(Keyboard::Right)) game.setDirection(Right);
+        if (Keyboard::isKeyPressed(Keyboard::Up))    game.setDirection(Up);
+        if (Keyboard::isKeyPressed(Keyboard::Down))  game.setDirection(Down);
 
-        if (timer>delay) {timer=0; Tick();}
+        if (timer>delay) {
+            timer=0; game.tick();
+        }
 
    ////// draw  ///////
     window.clear();
@@ -92,10 +121,13 @@ int snake()
       for (int j=0; j<GRID_HEIGHT; j++) 
         { sprite1.setPosition(i*CELL_SIZE, j*CELL_SIZE);  window.draw(sprite1); }
 
-    for (int i=0;i<snakeLength;i++)
-        { sprite2.setPosition(snakeObject[i].x*CELL_SIZE, snakeObject[i].y*CELL_SIZE);  window.draw(sprite2); }
+    for (int i=0;i< game.snakeLength;i++){
+        sprite2.setPosition(game.snake[i].x * CELL_SIZE, game.snake[i].y * CELL_SIZE);
+        window.draw(sprite2); 
+    }
    
-    sprite2.setPosition(fruits.x*CELL_SIZE, fruits.y*CELL_SIZE);  window.draw(sprite2);    
+    sprite2.setPosition(game.fruit.x * CELL_SIZE, game.fruit.y * CELL_SIZE);
+    window.draw(sprite2);
 
     window.display();
     }
