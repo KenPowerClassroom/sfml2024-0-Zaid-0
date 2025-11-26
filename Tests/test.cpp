@@ -6,6 +6,61 @@ const int tileSize = 18;
 
 #include"../16_SFML_Games/Grid.h"
 #include"../16_SFML_Games/Player.h"
+#include "SnakeGameLogic.h"
+
+
+// This test makes sure the snake actually moves down
+TEST(SnakeGameLogicTest, SnakeMovesDownCorrectly) {
+	SnakeGameLogic game;
+	game.setDirection(Down);
+	int oldY = game.snake[0].y;
+
+	game.tick();
+
+	EXPECT_EQ(game.snake[0].y, oldY + 1);
+}
+
+
+// This test checks that the snake gets longer when it eats a fruit.
+TEST(SnakeGameLogicTest, FruitIsEatenAndSnakeGrows) {
+	SnakeGameLogic game;
+
+	game.fruit.x = game.snake[0].x;
+	game.fruit.y = game.snake[0].y;
+
+	int oldLength = game.snakeLength;
+
+	game.tick();
+
+	EXPECT_EQ(game.snakeLength, oldLength + 1);
+}
+
+
+// This test checks that the snake wraps around when it goes past the right edge
+TEST(SnakeGameLogicTest, WrapAroundRightEdge) {
+	SnakeGameLogic game;
+
+	game.snake[0].x = GRID_WIDTH + 1;  //  out of bounds
+	game.tick();
+
+	EXPECT_EQ(game.snake[0].x, 0);
+	//The snake should appear on the left side of the grid (x = 0)
+	// instead of staying out of bounds.
+}
+
+// This test checks that the snake loses length when it runs into itself
+TEST(SnakeGameLogicTest, SelfCollisionReducesLength) {
+	SnakeGameLogic game;
+
+	game.snakeLength = 5;
+
+	game.snake[0] = { 5, 5 };
+	game.snake[2] = { 5, 5 };
+
+	game.tick();
+
+	EXPECT_EQ(game.snakeLength, 2);
+}
 
 
 TEST(Grid, HasWallsAndInterior) {
@@ -172,3 +227,4 @@ TEST(Player, ConstrainedDiagonallyFast) {
 	EXPECT_EQ(HEIGHT-1, p.y);
 	EXPECT_EQ(WIDTH-1, p.x);
 }
+
